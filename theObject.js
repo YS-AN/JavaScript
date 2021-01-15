@@ -95,4 +95,4 @@ range[Symbol.iterator] = function() {
 // 이제 의도한 대로 동작합니다!
 for (let num of range) {
     alert(num); // 1, then 2, 3, 4, 5
-}
+};
