@@ -12,7 +12,17 @@ function theBoys()
         nameEng: "JiChangmin",
         age: 24,
         let:"Get_it_Got_it", //예약어를 키로 사용할 수 있음!
-        [id]: 981105 //심볼형 키
+        [id]: 981105, //심볼형 키
+        album: {
+            name: "CHASE",
+            Date : new Date(2020, 8, 21),
+            song : ["The Stealer", "Shine Shine", "Whiplash", "Make or Break", "CHECKMATE"]
+        },
+
+        //객체를 문자열로 전환
+        toString() {
+            return `우주최강귀요미 본업존잘 ${theboy.name}은(는) ${theboy.age}살이랍니다^^ 더보이즈 ${theboy.let}!!`;
+        }
     };
 
     /*
@@ -141,11 +151,13 @@ set.add(mary);
 set.add(john);
 set.add(mary);
 
-alert( set.size ); // 3
+//alert(set.size); // 3 - 중복제거
 
+/*
 for (let user of set) {
     alert(user.name); // // John, Pete, Mary 순으로 출력됩니다.
 }
+//*/
 
 let user = {
     name: 'John',
@@ -158,4 +170,85 @@ let salaries = {
     "Pete": 300,
     "Mary": 250
 };
-alert( sumSalaries(salaries) ); // 650
+
+function sumSalaries(obj){
+    let retSum = 0;
+
+    for (let value of Object.values(obj)) {
+        retSum += value;
+    }
+
+    return retSum;
+}
+//alert(sumSalaries(salaries)); // 650
+
+let arr_name = ["JooYeon", "Lee"];
+let [firstName, familyName] = arr_name;
+//alert(firstName + " - " + familyName); // JooYeo - Lee
+
+let [name1, name2, name3] = "Ju/Hank/Nyeon".split('/');
+//alert(name1 + " - " + name2 + " - " + name3); // Ju - Hank - Nyeon
+
+let [one, two, three] = new Set([1, 2, 3]);
+
+// 객체의 키와 값 순회하기
+for (let [key, value] of Object.entries(theboysMember)) {
+    //alert(`${key}:${value}`);
+}
+
+let first = "An";
+let family = "YS";
+//alert(`${first} ${family}`); //An YS
+
+[first, family] = [family, first];
+//alert(`${first} ${family}`); //YS An
+
+let [n1, n2, ...rest] = ["LEE", "BEA", "KIM", "MUN", "CHOE", "JI", "JU", "SON"];
+//alert(`${n1} : ${n2} : ${rest[0]} : ${rest[1]} : ${rest.length}`); //LEE : BEA : KIM : MUN : 5
+
+/*
+let [input_family = prompt('성을 입력하세요.'), input_name = prompt('이름을 입력하세요.')] = ["안"]; //성은 안으로 디폴트됨 / 이름만 입력받음
+alert(`오~ 당신의 이름은 ${input_family}${input_name}이군용!!`);
+ //*/
+
+let options = {
+    title: "Menu",
+    width: 100,
+    height: 200
+};
+let {title, width, height} = options;
+//let {title, width, height} = {title: "Menu", width: 200, height: 100}; // 윗줄과 동일한 결과
+//alert(`${title} : ${width} x ${height}`);
+
+let now = new Date(); //현재 날짜 및 시간 출력
+//alert(now); //Sun Jan 17 2021 17:03:31 GMT+0900 (대한민국 표준시)
+
+let birth = new Date("1997-04-21");
+//alert(birth);
+
+let setDate = new Date(2011, 0, 1, 0, 0, 0, 0); // month는 zero-base
+
+function getWeekDay(date)
+{
+    switch(date.getDay())
+    {
+        case 0: return "일요일";
+        case 1: return "월요일";
+        case 2: return "화요일";
+        case 3: return "수요일";
+        case 4: return "목요일";
+        case 5: return "금요일";
+        case 6: return "토요일";
+        
+    }
+}
+
+now.setHours(21, 1, 1, 1);
+now.setDate(now.getDate() + 5);
+now.setSeconds(now.getSeconds() + 70);
+//alert(now.getFullYear() + " - " + now.getMonth() + 1 + " - " + now.getDate() + "(" + getWeekDay(now) + ") "
+//        + now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds());
+
+//alert(obj3.toString());
+
+alert(JSON.stringify(obj3.album)); //json 내용 나열
