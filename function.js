@@ -144,6 +144,12 @@ function makeCounter() {
     //직접 만든 프로퍼티를 사용하여 중첩 함수 선언--------
     function counter() { return counter.count++; };
     counter.count = 0;
+
+    counter.set = value => count = value
+
+    counter.increase = () => ++count;
+    counter.decrease = () => --count;
+
     return counter;
     //-------------------------------------------------
 }
@@ -155,6 +161,10 @@ alert(counter()); // 2
 counter.count = 10;
 alert(counter()); //10
 alert(counter()); //11
+alert(counter.set(20)); //20
+alert(counter.decrease()); //19
+alert(counter.decrease()); //18
+alert(counter.increase()); //19
 //*/
 
 /*
