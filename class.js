@@ -227,6 +227,7 @@ alert(`waterAmount : ${coffeeMachine.waterAmount}`) //waterAmount : 0
 alert(`power : ${coffeeMachine.power}`) //power : 100
 //*/
 
+/*
 class PowerArray extends Array {
     isEmpty() {
       return this.length === 0;
@@ -253,3 +254,37 @@ let arr = new PowerArray(1, 2, 5, 10, 50);
 let filteredArr = arr.filter(item => item >= 10);
 alert(arr.isEmpty()); // false
 alert(filteredArr.isEmpty()); //여기서 isEmpty 더이상 함수가 아님
+//*/
+
+class Rabbit {}
+let rabbit = new Rabbit();
+alert(rabbit instanceof Rabbit); //instanceof : 객체가 특정 클래스에 속하는지 확인
+
+let arr = [1, 2, 3];
+alert(arr instanceof Array); //true
+alert(arr instanceof Object); //true
+
+class Animal {
+    static [Symbol.hasInstance](obj) { //
+        if (obj.canEat) return true; //canEat 프로퍼티 있으면 animal이라고 판단함 (instanceOf 로직 직접 설정)
+    }
+}
+let obj = { canEat: true };
+alert(obj instanceof Animal); // true, Animal[Symbol.hasInstance](obj)가 호출됨
+
+Rabbit.prototype = { }; //프로퍼티 변경
+alert( rabbit instanceof Rabbit ); // false - 프로퍼티 변경해서 더이상 같은 객체 아님
+
+let objectToString = Object.prototype.toString; //편의를 위해 toString메서드 변수에 복사함
+let arr = [];
+alert( objectToString.call(arr) ); // 변수 타입 확인 : [object Array]
+alert( objectToString.call(123) ); // [object Number]
+alert( objectToString.call(null) ); // [object Null]
+alert( objectToString.call(alert) ); // [object Function]
+
+function A() {}
+function B() {}
+A.prototype = B.prototype = {};
+
+let a = new A();
+alert( a instanceof B ); // true
