@@ -256,13 +256,14 @@ alert(arr.isEmpty()); // false
 alert(filteredArr.isEmpty()); //여기서 isEmpty 더이상 함수가 아님
 //*/
 
+/*
 class Rabbit {}
 let rabbit = new Rabbit();
-alert(rabbit instanceof Rabbit); //instanceof : 객체가 특정 클래스에 속하는지 확인
+alert(`rabbit instanceof Rabbit : ${rabbit instanceof Rabbit}`); //true - instanceof : 객체가 특정 클래스에 속하는지 확인
 
 let arr = [1, 2, 3];
-alert(arr instanceof Array); //true
-alert(arr instanceof Object); //true
+alert(`arr instanceof Array : ${arr instanceof Array}`); //true
+alert(`arr instanceof Object : ${arr instanceof Object}`); //true
 
 class Animal {
     static [Symbol.hasInstance](obj) { //
@@ -270,21 +271,55 @@ class Animal {
     }
 }
 let obj = { canEat: true };
-alert(obj instanceof Animal); // true, Animal[Symbol.hasInstance](obj)가 호출됨
+alert(`obj instanceof Animal : ${obj instanceof Animal}`); // true, Animal[Symbol.hasInstance](obj)가 호출됨
 
-Rabbit.prototype = { }; //프로퍼티 변경
-alert( rabbit instanceof Rabbit ); // false - 프로퍼티 변경해서 더이상 같은 객체 아님
+function Rabbit02() {}
+let rabbit02 = new Rabbit();
+alert(`before - rabbit02 instanceof Rabbit02 : ${rabbit02 instanceof Rabbit02}`);
+
+Rabbit02.prototype = { }; //프로퍼티 변경
+alert(`after - rabbit instanceof Rabbit : ${rabbit02 instanceof Rabbit02}`); // false - 프로퍼티 변경해서 더이상 같은 객체 아님
 
 let objectToString = Object.prototype.toString; //편의를 위해 toString메서드 변수에 복사함
-let arr = [];
-alert( objectToString.call(arr) ); // 변수 타입 확인 : [object Array]
-alert( objectToString.call(123) ); // [object Number]
-alert( objectToString.call(null) ); // [object Null]
-alert( objectToString.call(alert) ); // [object Function]
+alert(`arr : ${objectToString.call(arr)}`); // 변수 타입 확인 : [object Array]
+alert(`123 : ${objectToString.call(123)}`); // [object Number]
+alert(`null : ${objectToString.call(null)}`); // [object Null]
+alert(`alert : ${objectToString.call(alert)}`); // [object Function]
 
+function A() {}
 function A() {}
 function B() {}
 A.prototype = B.prototype = {};
 
 let a = new A();
 alert( a instanceof B ); // true
+//*/
+
+let sayMixin = {
+    say(phrase) {
+        alert(phrase);
+    }
+};
+
+let sayHiMixin = {
+    __proto__: sayMixin, // (Object.create를 사용해 프로토타입을 설정할 수도 있습니다.)
+
+    sayHi() {
+        // 부모 메서드 호출
+        super.say(`Hello ${this.name}`); // (*)
+    },
+    sayBye() {
+        super.say(`Bye ${this.name}`); // (*)
+    }
+};
+
+class User {
+    constructor(name) {
+        this.name = name;
+    }
+}
+
+
+Object.assign(User.prototype, sayHiMixin); // 메서드 복사
+
+new User("Dude").sayHi(); // 이제 User가 인사를 할 수 있습니다.
