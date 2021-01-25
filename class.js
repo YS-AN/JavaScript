@@ -184,47 +184,46 @@ alert(Report.createTodays().title); //Today's digest > createTodays메소드 앞
 //*/
 
 /*
-class CoffeeMachine {
-    _waterAmount = 0;
-    _power = 0;
+try{
+    class CoffeeMachine {
+        _waterAmount = 0;
+        _power = 0;
 
-    #waterLimit = 200; //# = private
+        #waterLimit = 200; //# = private
 
-    constructor(power) {
-      this._power = power;
-      alert( `Created a coffee-machine, power: ${power}` );
-    }
-
-    get waterAmount() {
-        return this._waterAmount;
-    }
-    set waterAmount(value) {
-        if (value < 0) {
-          value = 0;
+        constructor(power) {
+            this._power = power;
+            alert( `Created a coffee-machine, power: ${power}` );
         }
 
-        this._waterAmount = value;
+        get waterAmount() {
+            return this._waterAmount;
+        }
+        set waterAmount(value) {
+            if (value < 0) {
+                value = 0;
+            }
+            this._waterAmount = value;
+        }
+
+        get power() {
+            return this._power;
+        }
+
+        #fixWaterAmount(value) { // # = private
+            if (value < 0) return 0;
+            if (value > this.#waterLimit) return this.#waterLimit;
+        }
     }
+    let coffeeMachine = new CoffeeMachine(100); //Created a coffee-machine, power: 100
+    coffeeMachine.waterAmount = 200;
+    alert(`waterAmount : ${coffeeMachine.waterAmount}`) //waterAmount : 200
 
-    get power() {
-        return this._power;
-    }
+    coffeeMachine.waterAmount = -10;
+    alert(`waterAmount : ${coffeeMachine.waterAmount}`) //waterAmount : 0
 
-    #fixWaterAmount(value) { // # = private
-        if (value < 0) return 0;
-        if (value > this.#waterLimit) return this.#waterLimit;
-    }
-}
-  
-let coffeeMachine = new CoffeeMachine(100);
-coffeeMachine.waterAmount = 200;
-alert(`waterAmount : ${coffeeMachine.waterAmount}`) //waterAmount : 200
-
-coffeeMachine.waterAmount = -10; 
-alert(`waterAmount : ${coffeeMachine.waterAmount}`) //waterAmount : 0
-
-//coffeeMachine.power = 300; //error : get만 만들었기 때문에 읽기 전용 변수이다.
-alert(`power : ${coffeeMachine.power}`) //power : 100
+    coffeeMachine.power = 300; //error : get만 만들었기 때문에 읽기 전용 변수이다.
+    alert(`power : ${coffeeMachine.power}`) //power : 100
 //*/
 
 /*
@@ -287,7 +286,6 @@ alert(`null : ${objectToString.call(null)}`); // [object Null]
 alert(`alert : ${objectToString.call(alert)}`); // [object Function]
 
 function A() {}
-function A() {}
 function B() {}
 A.prototype = B.prototype = {};
 
@@ -295,6 +293,7 @@ let a = new A();
 alert( a instanceof B ); // true
 //*/
 
+/*
 let sayMixin = {
     say(phrase) {
         alert(phrase);
@@ -323,3 +322,100 @@ class User {
 Object.assign(User.prototype, sayHiMixin); // 메서드 복사
 
 new User("Dude").sayHi(); // 이제 User가 인사를 할 수 있습니다.
+//*/
+
+/*
+let json = "{ bad json }";
+try {
+    let user = JSON.parse(json); // <-- 여기서 에러가 발생하므로
+    alert(user.name); // 이 코드는 동작하지 않습니다.
+}
+catch (e) {
+    alert(`[${e.name}] ${e.message}`); //[SyntaxError] Unexpected token b in JSON at position 2
+}
+//*/
+
+/*
+let json = '{"age": 30}'; // 불완전한 데이터
+try {
+    let user = JSON.parse(json); // <-- 에러 없음
+
+    if (!user.name) {
+        throw new SyntaxError("불완전한 데이터: 이름 없음"); // 에러를 직접 생성
+    }
+
+    blabla(); //얘상하지 못한 에러
+    
+    alert( user.name );
+}
+catch(e) {
+    if (e instanceof SyntaxError) {
+        alert( "JSON Error: " + e.message );
+    }
+    else {
+        throw e; // 에러 다시 던지기 (*)
+    }
+}
+finally {
+    alert('finally');
+}
+//*/
+
+class ReadError extends Error {
+    constructor(message, cause) {
+        super(message);
+        this.cause = cause;
+        this.name = 'ReadError';
+    }
+}
+
+class ValidationError extends Error {  }
+class PropertyRequiredError extends ValidationError {  }
+
+function validateUser(user) {
+    if (!user.age) {
+        throw new PropertyRequiredError("age");
+    }
+
+    if (!user.name) {
+        throw new PropertyRequiredError("name");
+    }
+}
+
+function readUser(json) {
+    let user;
+
+    try {
+        user = JSON.parse(json);
+    } catch (err) {
+        if (err instanceof SyntaxError) {
+            throw new ReadError("Syntax Error", err);
+        }
+        else {
+            throw err;
+        }
+    }
+
+    try {
+        validateUser(user);
+    } catch (err) {
+        if (err instanceof ValidationError) {
+            throw new ReadError("Validation Error", err);
+        }
+        else {
+            throw err;
+        }
+    }
+}
+try {
+    readUser('{잘못된 형식의 json}');
+}
+catch (e) {
+    if (e instanceof ReadError) {
+        alert(e);
+        alert("Original error: " + e.cause);  // Original error: SyntaxError: Unexpected token b in JSON at position 1
+    }
+    else {
+        throw e;
+    }
+}
